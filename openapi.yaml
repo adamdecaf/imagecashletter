@@ -20,7 +20,8 @@ paths:
   /ping:
     get:
       tags: ['Image Cash Letter Files']
-      summary: Ping the ImageCashLetter service to check if running
+      summary: Ping ICL
+      description: Check the ImageCashLetter service to check if running
       operationId: ping
       responses:
         '200':
@@ -28,7 +29,8 @@ paths:
   /files:
     get:
       tags: ['Image Cash Letter Files']
-      summary: Gets a list of Files
+      summary: Get files
+      description: List all ICL files created with the ImageCashLetter service. These files are not persisted through multiple runs of the service.
       operationId: getICLFiles
       security:
         - bearerAuth: []
@@ -55,7 +57,8 @@ paths:
   /files/create:
     post:
       tags: ['Image Cash Letter Files']
-      summary: Create a new File object
+      summary: Create File
+      description: Create a new File object from either the plaintext or JSON representation.
       operationId: createICLFile
       security:
         - bearerAuth: []
@@ -108,7 +111,8 @@ paths:
   /files/{fileID}:
     get:
       tags: ['Image Cash Letter Files']
-      summary: Retrieves the details of an existing File. You need only supply the unique File identifier that was returned upon creation.
+      summary: Retrieve a file
+      description: Get the details of an existing File using the unique File identifier that was returned upon creation.
       operationId: getICLFileByID
       security:
         - bearerAuth: []
@@ -136,62 +140,63 @@ paths:
                 $ref: '#/components/schemas/ICLFile'
         '404':
           description: A resource with the specified ID was not found
-    post:
-      tags: ['Image Cash Letter Files']
-      summary: Updates the specified File Header by setting the values of the parameters passed. Any parameters not provided will be left unchanged.
-      operationId: updateICLFile
-      security:
-        - bearerAuth: []
-        - cookieAuth: []
-      parameters:
-        - name: X-Request-ID
-          in: header
-          description: Optional Request ID allows application developer to trace requests through the systems logs
-          example: rs4f9915
-          schema:
-            type: string
-        - name: X-IDempotency-Key
-          in: header
-          description: Idempotent key in the header which expires after 24 hours. These strings should contain enough entropy for to not collide with each other in your requests.
-          example: a4f88150
-          required: false
-          schema:
-            type: string
-        - name: fileID
-          in: path
-          description: File ID
-          required: true
-          schema:
-            type: string
-            example: 3f2d23ee214
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ICLFileHeader'
-      responses:
-        '201':
-          description: A JSON object containing a new File
-          headers:
-            Location:
-              description: The location of the new resource
-              schema:
-                type: string
-                format: uri
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ICLFile'
-        '400':
-          description: "Invalid File Header Object"
-          content:
-            application/json:
-              schema:
-                $ref: 'https://raw.githubusercontent.com/moov-io/api/master/openapi-common.yaml#/components/schemas/Error'
+    # post:
+    #   tags: ['Image Cash Letter Files']
+    #   summary: Updates the specified File Header by setting the values of the parameters passed. Any parameters not provided will be left unchanged.
+    #   operationId: updateICLFile
+    #   security:
+    #     - bearerAuth: []
+    #     - cookieAuth: []
+    #   parameters:
+    #     - name: X-Request-ID
+    #       in: header
+    #       description: Optional Request ID allows application developer to trace requests through the systems logs
+    #       example: rs4f9915
+    #       schema:
+    #         type: string
+    #     - name: X-IDempotency-Key
+    #       in: header
+    #       description: Idempotent key in the header which expires after 24 hours. These strings should contain enough entropy for to not collide with each other in your requests.
+    #       example: a4f88150
+    #       required: false
+    #       schema:
+    #         type: string
+    #     - name: fileID
+    #       in: path
+    #       description: File ID
+    #       required: true
+    #       schema:
+    #         type: string
+    #         example: 3f2d23ee214
+    #   requestBody:
+    #     required: true
+    #     content:
+    #       application/json:
+    #         schema:
+    #           $ref: '#/components/schemas/ICLFileHeader'
+    #   responses:
+    #     '201':
+    #       description: A JSON object containing a new File
+    #       headers:
+    #         Location:
+    #           description: The location of the new resource
+    #           schema:
+    #             type: string
+    #             format: uri
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/ICLFile'
+    #     '400':
+    #       description: "Invalid File Header Object"
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: 'https://raw.githubusercontent.com/moov-io/api/master/openapi-common.yaml#/components/schemas/Error'
     delete:
       tags: ['Image Cash Letter Files']
-      summary: Permanently deletes a File and associated CashLetters and Bundles. It cannot be undone.
+      summary: Delete file
+      description: Permanently deletes a File and associated Batches. It cannot be undone.
       operationId: deleteICLFile
       security:
         - bearerAuth: []
@@ -218,7 +223,9 @@ paths:
   /files/{fileID}/contents:
     get:
       tags: ['Image Cash Letter Files']
-      summary: Assembles the existing file (Cash Letters, Bundles and Controls) records, computes sequence numbers and totals. Returns plaintext file.
+      summary: Get file contents
+      description: |
+        Assembles the existing file (batches and controls) records, computes sequence numbers and totals. Returns plaintext file.
       operationId: getICLFileContents
       security:
         - bearerAuth: []
@@ -247,7 +254,8 @@ paths:
   /files/{fileID}/validate:
     get:
       tags: ['Image Cash Letter Files']
-      summary: Validates the existing file. You need only supply the unique File identifier that was returned upon creation.
+      summary: Validate file
+      description: Validates the existing file. You need only supply the unique File identifier that was returned upon creation.
       operationId: validateICLFile
       security:
         - bearerAuth: []
@@ -279,6 +287,7 @@ paths:
     post:
       tags: ['Image Cash Letter Files']
       summary: Add CashLetter to File
+      description: Add a CashLetter to the specified file
       operationId: addICLToFile
       security:
         - bearerAuth: []
@@ -316,7 +325,8 @@ paths:
   /files/{fileID}/cashLetters/{cashLetterID}:
     delete:
       tags: ['Image Cash Letter Files']
-      summary: Delete a CashLetter from a File
+      summary: Delete CashLetter
+      description: Remove a CashLetter from the specified file
       operationId: deleteICLFromFile
       security:
         - bearerAuth: []

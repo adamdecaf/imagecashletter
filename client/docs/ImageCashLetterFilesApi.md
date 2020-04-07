@@ -5,15 +5,14 @@ All URIs are relative to *http://localhost:8083*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**AddICLToFile**](ImageCashLetterFilesApi.md#AddICLToFile) | **Post** /files/{fileID}/cashLetters | Add CashLetter to File
-[**CreateICLFile**](ImageCashLetterFilesApi.md#CreateICLFile) | **Post** /files/create | Create a new File object
-[**DeleteICLFile**](ImageCashLetterFilesApi.md#DeleteICLFile) | **Delete** /files/{fileID} | Permanently deletes a File and associated CashLetters and Bundles. It cannot be undone.
-[**DeleteICLFromFile**](ImageCashLetterFilesApi.md#DeleteICLFromFile) | **Delete** /files/{fileID}/cashLetters/{cashLetterID} | Delete a CashLetter from a File
-[**GetICLFileByID**](ImageCashLetterFilesApi.md#GetICLFileByID) | **Get** /files/{fileID} | Retrieves the details of an existing File. You need only supply the unique File identifier that was returned upon creation.
-[**GetICLFileContents**](ImageCashLetterFilesApi.md#GetICLFileContents) | **Get** /files/{fileID}/contents | Assembles the existing file (Cash Letters, Bundles and Controls) records, computes sequence numbers and totals. Returns plaintext file.
-[**GetICLFiles**](ImageCashLetterFilesApi.md#GetICLFiles) | **Get** /files | Gets a list of Files
-[**Ping**](ImageCashLetterFilesApi.md#Ping) | **Get** /ping | Ping the ImageCashLetter service to check if running
-[**UpdateICLFile**](ImageCashLetterFilesApi.md#UpdateICLFile) | **Post** /files/{fileID} | Updates the specified File Header by setting the values of the parameters passed. Any parameters not provided will be left unchanged.
-[**ValidateICLFile**](ImageCashLetterFilesApi.md#ValidateICLFile) | **Get** /files/{fileID}/validate | Validates the existing file. You need only supply the unique File identifier that was returned upon creation.
+[**CreateICLFile**](ImageCashLetterFilesApi.md#CreateICLFile) | **Post** /files/create | Create File
+[**DeleteICLFile**](ImageCashLetterFilesApi.md#DeleteICLFile) | **Delete** /files/{fileID} | Delete file
+[**DeleteICLFromFile**](ImageCashLetterFilesApi.md#DeleteICLFromFile) | **Delete** /files/{fileID}/cashLetters/{cashLetterID} | Delete CashLetter
+[**GetICLFileByID**](ImageCashLetterFilesApi.md#GetICLFileByID) | **Get** /files/{fileID} | Retrieve a file
+[**GetICLFileContents**](ImageCashLetterFilesApi.md#GetICLFileContents) | **Get** /files/{fileID}/contents | Get file contents
+[**GetICLFiles**](ImageCashLetterFilesApi.md#GetICLFiles) | **Get** /files | Get files
+[**Ping**](ImageCashLetterFilesApi.md#Ping) | **Get** /ping | Ping ICL
+[**ValidateICLFile**](ImageCashLetterFilesApi.md#ValidateICLFile) | **Get** /files/{fileID}/validate | Validate file
 
 
 
@@ -22,6 +21,8 @@ Method | HTTP request | Description
 > AddICLToFile(ctx, fileID, cashLetter, optional)
 
 Add CashLetter to File
+
+Add a CashLetter to the specified file
 
 ### Required Parameters
 
@@ -67,7 +68,9 @@ No authorization required
 
 > IclFile CreateICLFile(ctx, createIclFile, optional)
 
-Create a new File object
+Create File
+
+Create a new File object from either the plaintext or JSON representation.
 
 ### Required Parameters
 
@@ -111,7 +114,9 @@ No authorization required
 
 > DeleteICLFile(ctx, fileID, optional)
 
-Permanently deletes a File and associated CashLetters and Bundles. It cannot be undone.
+Delete file
+
+Permanently deletes a File and associated Batches. It cannot be undone.
 
 ### Required Parameters
 
@@ -154,7 +159,9 @@ No authorization required
 
 > DeleteICLFromFile(ctx, fileID, cashLetterID, optional)
 
-Delete a CashLetter from a File
+Delete CashLetter
+
+Remove a CashLetter from the specified file
 
 ### Required Parameters
 
@@ -199,7 +206,9 @@ No authorization required
 
 > IclFile GetICLFileByID(ctx, fileID, optional)
 
-Retrieves the details of an existing File. You need only supply the unique File identifier that was returned upon creation.
+Retrieve a file
+
+Get the details of an existing File using the unique File identifier that was returned upon creation.
 
 ### Required Parameters
 
@@ -242,7 +251,9 @@ No authorization required
 
 > string GetICLFileContents(ctx, fileID, optional)
 
-Assembles the existing file (Cash Letters, Bundles and Controls) records, computes sequence numbers and totals. Returns plaintext file.
+Get file contents
+
+Assembles the existing file (batches and controls) records, computes sequence numbers and totals. Returns plaintext file. 
 
 ### Required Parameters
 
@@ -285,7 +296,9 @@ No authorization required
 
 > []IclFile GetICLFiles(ctx, optional)
 
-Gets a list of Files
+Get files
+
+List all ICL files created with the ImageCashLetter service. These files are not persisted through multiple runs of the service.
 
 ### Required Parameters
 
@@ -326,7 +339,9 @@ No authorization required
 
 > Ping(ctx, )
 
-Ping the ImageCashLetter service to check if running
+Ping ICL
+
+Check the ImageCashLetter service to check if running
 
 ### Required Parameters
 
@@ -350,55 +365,11 @@ No authorization required
 [[Back to README]](../README.md)
 
 
-## UpdateICLFile
-
-> IclFile UpdateICLFile(ctx, fileID, iclFileHeader, optional)
-
-Updates the specified File Header by setting the values of the parameters passed. Any parameters not provided will be left unchanged.
-
-### Required Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-**fileID** | **string**| File ID | 
-**iclFileHeader** | [**IclFileHeader**](IclFileHeader.md)|  | 
- **optional** | ***UpdateICLFileOpts** | optional parameters | nil if no parameters
-
-### Optional Parameters
-
-Optional parameters are passed through a pointer to a UpdateICLFileOpts struct
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-
-
- **xRequestID** | **optional.String**| Optional Request ID allows application developer to trace requests through the systems logs | 
- **xIDempotencyKey** | **optional.String**| Idempotent key in the header which expires after 24 hours. These strings should contain enough entropy for to not collide with each other in your requests. | 
-
-### Return type
-
-[**IclFile**](ICLFile.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
-- **Content-Type**: application/json
-- **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../README.md#documentation-for-models)
-[[Back to README]](../README.md)
-
-
 ## ValidateICLFile
 
 > IclFile ValidateICLFile(ctx, fileID, optional)
+
+Validate file
 
 Validates the existing file. You need only supply the unique File identifier that was returned upon creation.
 

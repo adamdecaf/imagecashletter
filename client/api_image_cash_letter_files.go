@@ -35,6 +35,7 @@ type AddICLToFileOpts struct {
 
 /*
 AddICLToFile Add CashLetter to File
+Add a CashLetter to the specified file
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param fileID File ID
  * @param cashLetter
@@ -118,7 +119,8 @@ type CreateICLFileOpts struct {
 }
 
 /*
-CreateICLFile Create a new File object
+CreateICLFile Create File
+Create a new File object from either the plaintext or JSON representation.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param createIclFile Content of the ImageCashLetter file (in json or raw text)
  * @param optional nil or *CreateICLFileOpts - Optional Parameters:
@@ -229,7 +231,8 @@ type DeleteICLFileOpts struct {
 }
 
 /*
-DeleteICLFile Permanently deletes a File and associated CashLetters and Bundles. It cannot be undone.
+DeleteICLFile Delete file
+Permanently deletes a File and associated Batches. It cannot be undone.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param fileID File ID
  * @param optional nil or *DeleteICLFileOpts - Optional Parameters:
@@ -305,7 +308,8 @@ type DeleteICLFromFileOpts struct {
 }
 
 /*
-DeleteICLFromFile Delete a CashLetter from a File
+DeleteICLFromFile Delete CashLetter
+Remove a CashLetter from the specified file
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param fileID File ID
  * @param cashLetterID CashLetter ID
@@ -383,7 +387,8 @@ type GetICLFileByIDOpts struct {
 }
 
 /*
-GetICLFileByID Retrieves the details of an existing File. You need only supply the unique File identifier that was returned upon creation.
+GetICLFileByID Retrieve a file
+Get the details of an existing File using the unique File identifier that was returned upon creation.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param fileID File ID
  * @param optional nil or *GetICLFileByIDOpts - Optional Parameters:
@@ -480,7 +485,8 @@ type GetICLFileContentsOpts struct {
 }
 
 /*
-GetICLFileContents Assembles the existing file (Cash Letters, Bundles and Controls) records, computes sequence numbers and totals. Returns plaintext file.
+GetICLFileContents Get file contents
+Assembles the existing file (batches and controls) records, computes sequence numbers and totals. Returns plaintext file.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param fileID File ID
  * @param optional nil or *GetICLFileContentsOpts - Optional Parameters:
@@ -576,7 +582,8 @@ type GetICLFilesOpts struct {
 }
 
 /*
-GetICLFiles Gets a list of Files
+GetICLFiles Get files
+List all ICL files created with the ImageCashLetter service. These files are not persisted through multiple runs of the service.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *GetICLFilesOpts - Optional Parameters:
  * @param "XRequestID" (optional.String) -  Optional Request ID allows application developer to trace requests through the systems logs
@@ -665,7 +672,8 @@ func (a *ImageCashLetterFilesApiService) GetICLFiles(ctx _context.Context, local
 }
 
 /*
-Ping Ping the ImageCashLetter service to check if running
+Ping Ping ICL
+Check the ImageCashLetter service to check if running
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 */
 func (a *ImageCashLetterFilesApiService) Ping(ctx _context.Context) (*_nethttp.Response, error) {
@@ -728,127 +736,14 @@ func (a *ImageCashLetterFilesApiService) Ping(ctx _context.Context) (*_nethttp.R
 	return localVarHTTPResponse, nil
 }
 
-// UpdateICLFileOpts Optional parameters for the method 'UpdateICLFile'
-type UpdateICLFileOpts struct {
-	XRequestID      optional.String
-	XIDempotencyKey optional.String
-}
-
-/*
-UpdateICLFile Updates the specified File Header by setting the values of the parameters passed. Any parameters not provided will be left unchanged.
- * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param fileID File ID
- * @param iclFileHeader
- * @param optional nil or *UpdateICLFileOpts - Optional Parameters:
- * @param "XRequestID" (optional.String) -  Optional Request ID allows application developer to trace requests through the systems logs
- * @param "XIDempotencyKey" (optional.String) -  Idempotent key in the header which expires after 24 hours. These strings should contain enough entropy for to not collide with each other in your requests.
-@return IclFile
-*/
-func (a *ImageCashLetterFilesApiService) UpdateICLFile(ctx _context.Context, fileID string, iclFileHeader IclFileHeader, localVarOptionals *UpdateICLFileOpts) (IclFile, *_nethttp.Response, error) {
-	var (
-		localVarHTTPMethod   = _nethttp.MethodPost
-		localVarPostBody     interface{}
-		localVarFormFileName string
-		localVarFileName     string
-		localVarFileBytes    []byte
-		localVarReturnValue  IclFile
-	)
-
-	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/files/{fileID}"
-	localVarPath = strings.Replace(localVarPath, "{"+"fileID"+"}", _neturl.QueryEscape(fmt.Sprintf("%v", fileID)), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := _neturl.Values{}
-	localVarFormParams := _neturl.Values{}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	if localVarOptionals != nil && localVarOptionals.XRequestID.IsSet() {
-		localVarHeaderParams["X-Request-ID"] = parameterToString(localVarOptionals.XRequestID.Value(), "")
-	}
-	if localVarOptionals != nil && localVarOptionals.XIDempotencyKey.IsSet() {
-		localVarHeaderParams["X-IDempotency-Key"] = parameterToString(localVarOptionals.XIDempotencyKey.Value(), "")
-	}
-	// body params
-	localVarPostBody = &iclFileHeader
-	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(r)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 201 {
-			var v IclFile
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
 // ValidateICLFileOpts Optional parameters for the method 'ValidateICLFile'
 type ValidateICLFileOpts struct {
 	XRequestID optional.String
 }
 
 /*
-ValidateICLFile Validates the existing file. You need only supply the unique File identifier that was returned upon creation.
+ValidateICLFile Validate file
+Validates the existing file. You need only supply the unique File identifier that was returned upon creation.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param fileID File ID
  * @param optional nil or *ValidateICLFileOpts - Optional Parameters:

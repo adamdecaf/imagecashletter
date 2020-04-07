@@ -19,15 +19,18 @@ tags:
 paths:
   /ping:
     get:
+      description: Check the ImageCashLetter service to check if running
       operationId: ping
       responses:
         200:
           description: Service is running properly
-      summary: Ping the ImageCashLetter service to check if running
+      summary: Ping ICL
       tags:
       - Image Cash Letter Files
   /files:
     get:
+      description: List all ICL files created with the ImageCashLetter service. These
+        files are not persisted through multiple runs of the service.
       operationId: getICLFiles
       parameters:
       - description: Optional Request ID allows application developer to trace requests
@@ -57,11 +60,12 @@ paths:
       security:
       - bearerAuth: []
       - cookieAuth: []
-      summary: Gets a list of Files
+      summary: Get files
       tags:
       - Image Cash Letter Files
   /files/create:
     post:
+      description: Create a new File object from either the plaintext or JSON representation.
       operationId: createICLFile
       parameters:
       - description: Optional Request ID allows application developer to trace requests
@@ -122,11 +126,13 @@ paths:
       security:
       - bearerAuth: []
       - cookieAuth: []
-      summary: Create a new File object
+      summary: Create File
       tags:
       - Image Cash Letter Files
   /files/{fileID}:
     delete:
+      description: Permanently deletes a File and associated Batches. It cannot be
+        undone.
       operationId: deleteICLFile
       parameters:
       - description: File ID
@@ -156,11 +162,12 @@ paths:
       security:
       - bearerAuth: []
       - cookieAuth: []
-      summary: Permanently deletes a File and associated CashLetters and Bundles.
-        It cannot be undone.
+      summary: Delete file
       tags:
       - Image Cash Letter Files
     get:
+      description: Get the details of an existing File using the unique File identifier
+        that was returned upon creation.
       operationId: getICLFileByID
       parameters:
       - description: Optional Request ID allows application developer to trace requests
@@ -194,79 +201,13 @@ paths:
       security:
       - bearerAuth: []
       - cookieAuth: []
-      summary: Retrieves the details of an existing File. You need only supply the
-        unique File identifier that was returned upon creation.
-      tags:
-      - Image Cash Letter Files
-    post:
-      operationId: updateICLFile
-      parameters:
-      - description: Optional Request ID allows application developer to trace requests
-          through the systems logs
-        example: rs4f9915
-        explode: false
-        in: header
-        name: X-Request-ID
-        required: false
-        schema:
-          type: string
-        style: simple
-      - description: Idempotent key in the header which expires after 24 hours. These
-          strings should contain enough entropy for to not collide with each other
-          in your requests.
-        example: a4f88150
-        explode: false
-        in: header
-        name: X-IDempotency-Key
-        required: false
-        schema:
-          type: string
-        style: simple
-      - description: File ID
-        explode: false
-        in: path
-        name: fileID
-        required: true
-        schema:
-          example: 3f2d23ee214
-          type: string
-        style: simple
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ICLFileHeader'
-        required: true
-      responses:
-        201:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ICLFile'
-          description: A JSON object containing a new File
-          headers:
-            Location:
-              description: The location of the new resource
-              explode: false
-              schema:
-                format: uri
-                type: string
-              style: simple
-        400:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Invalid File Header Object
-      security:
-      - bearerAuth: []
-      - cookieAuth: []
-      summary: Updates the specified File Header by setting the values of the parameters
-        passed. Any parameters not provided will be left unchanged.
+      summary: Retrieve a file
       tags:
       - Image Cash Letter Files
   /files/{fileID}/contents:
     get:
+      description: |
+        Assembles the existing file (batches and controls) records, computes sequence numbers and totals. Returns plaintext file.
       operationId: getICLFileContents
       parameters:
       - description: Optional Request ID allows application developer to trace requests
@@ -298,12 +239,13 @@ paths:
       security:
       - bearerAuth: []
       - cookieAuth: []
-      summary: Assembles the existing file (Cash Letters, Bundles and Controls) records,
-        computes sequence numbers and totals. Returns plaintext file.
+      summary: Get file contents
       tags:
       - Image Cash Letter Files
   /files/{fileID}/validate:
     get:
+      description: Validates the existing file. You need only supply the unique File
+        identifier that was returned upon creation.
       operationId: validateICLFile
       parameters:
       - description: Optional Request ID allows application developer to trace requests
@@ -337,12 +279,12 @@ paths:
       security:
       - bearerAuth: []
       - cookieAuth: []
-      summary: Validates the existing file. You need only supply the unique File identifier
-        that was returned upon creation.
+      summary: Validate file
       tags:
       - Image Cash Letter Files
   /files/{fileID}/cashLetters:
     post:
+      description: Add a CashLetter to the specified file
       operationId: addICLToFile
       parameters:
       - description: Optional Request ID allows application developer to trace requests
@@ -392,6 +334,7 @@ paths:
       - Image Cash Letter Files
   /files/{fileID}/cashLetters/{cashLetterID}:
     delete:
+      description: Remove a CashLetter from the specified file
       operationId: deleteICLFromFile
       parameters:
       - description: Optional Request ID allows application developer to trace requests
@@ -430,7 +373,7 @@ paths:
       security:
       - bearerAuth: []
       - cookieAuth: []
-      summary: Delete a CashLetter from a File
+      summary: Delete CashLetter
       tags:
       - Image Cash Letter Files
 components:
